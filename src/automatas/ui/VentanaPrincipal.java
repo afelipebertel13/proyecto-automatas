@@ -22,7 +22,7 @@ public class VentanaPrincipal extends JFrame {
         menu.add(crearBoton("Nivel 0: Máquina de Turing", "N0"));
         add(menu, BorderLayout.NORTH);
 
-        contenido.add(marcador("Nivel 3 - por construir"), "N3");
+        contenido.add(new automatas.nivel3.PanelAFD(), "N3");
         contenido.add(marcador("Nivel 2 - por construir"), "N2");
         contenido.add(marcador("Nivel 1 - por construir"), "N1");
         contenido.add(marcador("Nivel 0 - por construir"), "N0");
