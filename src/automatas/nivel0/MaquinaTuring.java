@@ -25,7 +25,7 @@ public class MaquinaTuring {
     private final Set<String> estados = new LinkedHashSet<>();
     private final Set<Character> alfabetoCinta = new LinkedHashSet<>();
     private final Map<String, Map<Character, Regla>> reglas = new HashMap<>();
-    private final boolean aceptaPorEstado; // true: acepta si llega a estado final; false: solo calcula
+    private final boolean aceptaPorEstado;
 
     // --- ejecución ---
     private final Map<Integer, Character> cinta = new HashMap<>();
@@ -127,6 +127,22 @@ public class MaquinaTuring {
     public Set<Character> getAlfabetoCinta() { return alfabetoCinta; }
     public Set<String> getEstadosAceptacion() { return estadosAceptacion; }
     public boolean isAceptaPorEstado() { return aceptaPorEstado; }
+    public Set<String> getEstados() { return estados; }
+
+    /** Devuelve todas las reglas como lista de {desde, lee, escribe, mueve, hacia}. */
+    public List<String[]> listarReglas() {
+        List<String[]> lista = new ArrayList<>();
+        for (String desde : estados) {
+            Map<Character, Regla> t = reglas.get(desde);
+            if (t == null) continue;
+            for (Map.Entry<Character, Regla> en : t.entrySet()) {
+                Regla r = en.getValue();
+                lista.add(new String[]{desde, "" + en.getKey(), "" + r.escribe,
+                        "" + r.mueve, r.nuevoEstado});
+            }
+        }
+        return lista;
+    }
 
     // ------------------------------------------------------------------
     // Programas predefinidos
@@ -138,46 +154,38 @@ public class MaquinaTuring {
                 "Acepta cadenas sobre {a,b} que se leen igual al derecho y al revés", "q0", true);
         m.agregarFinal("qA");
 
-        // q0: toma el primer símbolo y lo borra
         m.regla("q0", 'a', BLANCO, 'R', "qa");
         m.regla("q0", 'b', BLANCO, 'R', "qb");
-        m.regla("q0", BLANCO, BLANCO, 'S', "qA"); // vacía: palíndromo
+        m.regla("q0", BLANCO, BLANCO, 'S', "qA");
 
-        // qa: recuerda 'a', corre hasta el final
         m.regla("qa", 'a', 'a', 'R', "qa");
         m.regla("qa", 'b', 'b', 'R', "qa");
         m.regla("qa", BLANCO, BLANCO, 'L', "qa2");
-        // qa2: compara el último símbolo con 'a'
         m.regla("qa2", 'a', BLANCO, 'L', "qback");
-        m.regla("qa2", BLANCO, BLANCO, 'S', "qA"); // ya no quedaba nada
+        m.regla("qa2", BLANCO, BLANCO, 'S', "qA");
 
-        // qb: recuerda 'b'
         m.regla("qb", 'a', 'a', 'R', "qb");
         m.regla("qb", 'b', 'b', 'R', "qb");
         m.regla("qb", BLANCO, BLANCO, 'L', "qb2");
         m.regla("qb2", 'b', BLANCO, 'L', "qback");
         m.regla("qb2", BLANCO, BLANCO, 'S', "qA");
 
-        // qback: vuelve al inicio
         m.regla("qback", 'a', 'a', 'L', "qback");
         m.regla("qback", 'b', 'b', 'L', "qback");
         m.regla("qback", BLANCO, BLANCO, 'R', "q0");
         return m;
     }
 
-    /** Suma en unario: 111+11 -> 11111. Termina en "qF" (calcula, deja resultado en la cinta). */
+    /** Suma en unario: 111+11 -> 11111. */
     public static MaquinaTuring sumaUnaria() {
         MaquinaTuring m = new MaquinaTuring("Suma en unario",
                 "Entrada: 1^a+1^b  (por ejemplo 111+11). Deja 1^(a+b) en la cinta", "s0", true);
         m.agregarFinal("sF");
 
-        // s0: avanza hasta el '+', lo cambia por '1'
         m.regla("s0", '1', '1', 'R', "s0");
         m.regla("s0", '+', '1', 'R', "s1");
-        // s1: avanza hasta el final
         m.regla("s1", '1', '1', 'R', "s1");
         m.regla("s1", BLANCO, BLANCO, 'L', "s2");
-        // s2: borra el último '1' (sobra uno por el '+')
         m.regla("s2", '1', BLANCO, 'S', "sF");
         return m;
     }
