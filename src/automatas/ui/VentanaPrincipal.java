@@ -23,7 +23,7 @@ public class VentanaPrincipal extends JFrame {
         add(menu, BorderLayout.NORTH);
 
         contenido.add(new automatas.nivel3.PanelAFD(), "N3");
-        contenido.add(marcador("Nivel 2 - por construir"), "N2");
+        contenido.add(new automatas.nivel2.PanelPila(), "N2");
         contenido.add(marcador("Nivel 1 - por construir"), "N1");
         contenido.add(marcador("Nivel 0 - por construir"), "N0");
         add(contenido, BorderLayout.CENTER);
