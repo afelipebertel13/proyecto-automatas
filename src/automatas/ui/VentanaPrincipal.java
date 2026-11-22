@@ -27,17 +27,15 @@ public class VentanaPrincipal extends JFrame {
         contenido.add(new automatas.nivel1.PanelLBA(), "N1");
         contenido.add(new automatas.nivel0.PanelTuring(), "N0");
         add(contenido, BorderLayout.CENTER);
+
+        // Colores y botones redondeados
+        Estilo.aplicar(getContentPane());
+        menu.setBackground(Estilo.BARRA);
     }
 
     private JButton crearBoton(String texto, String nombre) {
         JButton b = new JButton(texto);
         b.addActionListener(e -> cartas.show(contenido, nombre));
         return b;
-    }
-
-    private JPanel marcador(String texto) {
-        JPanel p = new JPanel(new GridBagLayout());
-        p.add(new JLabel(texto));
-        return p;
     }
 }
